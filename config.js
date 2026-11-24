@@ -23,6 +23,6 @@ module.exports = {
     ANTI_DELETE: true,
     ANTI_EDIT: true,
     FORWARD_TAG: true,   // bot ge msgs channel ekak eken forward una wage pennanawa
-    NEWSLETTER_JID: '120363431110439058@newsletter',
+    NEWSLETTER_JID: '120363407469550831@newsletter',
     ANTI_DEST: 'owner' // 'owner' = bot number eke own chat eka | 'chat' = delete/edit una chat eka
 };
