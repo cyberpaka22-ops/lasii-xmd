@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Queen lasii · Pair Code</title>
+<meta name="theme-color" content="#2a0f26">
+<link rel="icon" href="https://files.catbox.moe/29hxc2.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --plum:#2a0f26;
+  --plum-2:#3d1637;
+  --rose:#ff5fa2;
+  --blush:#ffd1e6;
+  --orchid:#b86bff;
+  --cream:#fff5fa;
+  --glass:rgba(255,255,255,.08);
+  --line:rgba(255,190,225,.28);
+  --ok:#7dffc2;
+  --err:#ff8aa8;
+  --display:"Yeseva One","Georgia",serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  min-height:100%;
+  font-family:var(--body);
+  color:var(--cream);
+  background:
+    radial-gradient(60% 50% at 15% 10%,rgba(255,95,162,.38),transparent 70%),
+    radial-gradient(55% 45% at 90% 20%,rgba(184,107,255,.35),transparent 70%),
+    radial-gradient(70% 60% at 50% 110%,rgba(255,95,162,.30),transparent 70%),
+    var(--plum);
+  background-attachment:fixed;
+  overflow-x:hidden;
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 18px 40px;
+}
+#petals{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+main,footer{position:relative;z-index:1;width:100%;max-width:460px}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.live{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:99px;
+  border:1px solid rgba(125,255,194,.35);background:rgba(125,255,194,.08);
+  color:var(--ok);font-weight:800;font-size:.78rem;
+}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:blink 1.8s infinite}
+.live.off{color:var(--err);border-color:rgba(255,138,168,.35);background:rgba(255,138,168,.08)}
+.live.off i{background:var(--err);box-shadow:none;animation:none}
+@keyframes blink{50%{opacity:.35}}
+.settings-btn{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  padding:9px 16px;border-radius:99px;color:var(--cream);font-weight:800;font-size:.9rem;
+  background:var(--glass);border:1px solid var(--line);
+  transition:background .2s,border-color .2s,transform .15s;
+}
+.settings-btn:hover{background:rgba(255,255,255,.14);border-color:var(--rose);transform:translateY(-1px)}
+.settings-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.settings-wide{justify-content:center;width:100%;margin-top:12px;padding:15px 18px;border-radius:20px;font-size:1rem}
+.stats{margin-top:14px;display:flex;justify-content:center;gap:18px;font-size:.82rem;color:rgba(255,209,230,.8);flex-wrap:wrap}
+.stats b{color:var(--cream);font-weight:800}
+.ok-msg{margin-top:16px;display:none;text-align:center;color:var(--ok);font-weight:800;line-height:1.4}
+.ok-msg.show{display:block}
+.ok-msg a{color:var(--blush)}
+
+/* ---------- hero ---------- */
+.hero{text-align:center;padding-top:8px}
+.logo-wrap{
+  position:relative;width:148px;height:148px;margin:0 auto 22px;
+}
+.logo-wrap::before{
+  content:"";position:absolute;inset:-9px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--rose),var(--orchid),var(--blush),var(--rose));
+  animation:spin 9s linear infinite;
+  filter:blur(.3px);
+}
+.logo-wrap::after{
+  content:"";position:absolute;inset:-26px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,95,162,.45),transparent 68%);
+  z-index:-1;
+}
+.logo-wrap img{
+  position:relative;width:100%;height:100%;object-fit:cover;border-radius:50%;
+  border:5px solid var(--plum);display:block;background:var(--plum-2);
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+h1{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(2.5rem,11vw,3.4rem);line-height:1;letter-spacing:.01em;
+  background:linear-gradient(100deg,#fff 0%,var(--blush) 45%,var(--rose) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 40px rgba(255,95,162,.35);
+}
+.tag{margin-top:10px;color:var(--blush);font-weight:600;font-size:1.02rem}
+
+/* ---------- card ---------- */
+.card{
+  margin-top:28px;padding:26px 22px 24px;
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:30px;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 20px 60px rgba(20,0,20,.45),inset 0 1px 0 rgba(255,255,255,.15);
+}
+label{display:block;font-weight:800;font-size:.95rem;margin-bottom:9px;color:var(--blush)}
+.field{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(20,0,20,.38);
+  border:1.5px solid var(--line);border-radius:20px;padding:4px 16px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.field:focus-within{border-color:var(--rose);box-shadow:0 0 0 4px rgba(255,95,162,.22)}
+.field .plus{font-weight:800;color:var(--rose);font-size:1.2rem}
+input{
+  flex:1;min-width:0;background:none;border:0;outline:0;
+  color:var(--cream);font:700 1.15rem var(--body);letter-spacing:.04em;
+  padding:14px 0;
+}
+input::placeholder{color:rgba(255,209,230,.42);font-weight:600}
+.hint{margin-top:9px;font-size:.84rem;color:rgba(255,209,230,.72);line-height:1.45}
+
+button.go{
+  margin-top:18px;width:100%;border:0;cursor:pointer;
+  padding:16px 18px;border-radius:20px;
+  font:800 1.08rem var(--body);color:#3a0d2f;
+  background:linear-gradient(100deg,#ffd1e6,var(--rose) 60%,#ff7fb6);
+  box-shadow:0 10px 28px rgba(255,95,162,.45),inset 0 1px 0 rgba(255,255,255,.7);
+  transition:transform .15s,box-shadow .15s,filter .15s;
+}
+button.go:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,95,162,.55),inset 0 1px 0 rgba(255,255,255,.7)}
+button.go:active{transform:translateY(0)}
+button.go:disabled{filter:grayscale(.5) brightness(.85);cursor:wait;transform:none}
+
+:focus-visible{outline:3px solid var(--blush);outline-offset:3px}
+
+/* ---------- result ---------- */
+.result{margin-top:20px;display:none}
+.result.show{display:block;animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.result .cap{font-weight:800;color:var(--ok);text-align:center;margin-bottom:12px}
+.code{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:nowrap}
+.code .ch{
+  width:clamp(30px,9.2vw,40px);height:clamp(42px,12vw,54px);
+  display:grid;place-items:center;
+  font:800 clamp(1.3rem,6vw,1.7rem) var(--body);
+  color:#3a0d2f;background:linear-gradient(180deg,#fff,var(--blush));
+  border-radius:13px;box-shadow:0 6px 16px rgba(255,95,162,.35);
+}
+.code .dash{font-weight:800;font-size:1.5rem;color:var(--rose);padding:0 2px}
+.copy{
+  margin:16px auto 0;display:block;cursor:pointer;
+  background:transparent;color:var(--cream);
+  border:1.5px solid var(--line);border-radius:16px;
+  padding:10px 22px;font:800 .95rem var(--body);
+  transition:background .2s,border-color .2s;
+}
+.copy:hover{background:rgba(255,255,255,.1);border-color:var(--rose)}
+.error{
+  margin-top:16px;display:none;text-align:center;
+  color:var(--err);font-weight:700;font-size:.95rem;line-height:1.4;
+}
+.error.show{display:block}
+
+/* ---------- steps ---------- */
+.steps{margin-top:26px;padding:22px;border-radius:26px;border:1px dashed var(--line)}
+.steps h2{font-family:var(--display);font-weight:400;font-size:1.3rem;margin-bottom:12px;color:var(--blush)}
+.steps ol{padding-left:22px;display:grid;gap:9px}
+.steps li{line-height:1.45;font-size:.95rem;color:rgba(255,245,250,.9)}
+.steps li::marker{color:var(--rose);font-weight:800}
+
+/* ---------- channel ---------- */
+.channel{
+  margin-top:22px;display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:15px 18px;border-radius:20px;text-decoration:none;
+  color:var(--cream);font-weight:800;
+  background:linear-gradient(100deg,rgba(184,107,255,.35),rgba(255,95,162,.35));
+  border:1px solid var(--line);
+  transition:transform .15s,background .2s;
+}
+.channel:hover{transform:translateY(-2px);background:linear-gradient(100deg,rgba(184,107,255,.5),rgba(255,95,162,.5))}
+.channel svg{width:22px;height:22px;fill:currentColor;flex:none}
+
+footer{margin-top:30px;text-align:center;font-size:.9rem;color:rgba(255,209,230,.8)}
+footer b{color:var(--cream);font-weight:800}
+
+@media (prefers-reduced-motion:reduce){
+  .logo-wrap::before{animation:none}
+  .result.show{animation:none}
+  button.go,.channel{transition:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="petals" aria-hidden="true"></canvas>
+
+<main>
+  <div class="topbar">
+    <span class="live off" id="live"><i></i><span id="liveTxt">connecting…</span></span>
+    <a class="settings-btn" href="settings.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+      Settings
+    </a>
+  </div>
+
+  <section class="hero">
+    <div class="logo-wrap">
+      <img src="https://files.catbox.moe/8x8sox.jpg" alt="Queen Lasii logo" width="148" height="148">
+    </div>
+    <h1>Queen Lasii</h1>
+    <p class="tag">Link your WhatsApp in seconds ♡</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <label for="num">Your WhatsApp number</label>
+    <div class="field">
+      <span class="plus">+</span>
+      <input id="num" type="tel" inputmode="numeric" autocomplete="tel" placeholder="94766619363" maxlength="20">
+    </div>
+    <p class="hint">Start with your country code, no spaces or dashes. Sri Lanka: 94766619363</p>
+
+    <button class="go" id="go" type="button">Get my pair code</button>
+
+    <div class="error" id="err" role="alert"></div>
+    <div class="ok-msg" id="okmsg">You're already connected. <a href="settings.html">Open Settings</a></div>
+
+    <div class="result" id="res">
+      <p class="cap">Your code is ready</p>
+      <div class="code" id="code"></div>
+      <button class="copy" id="copy" type="button">Copy code</button>
+      <p class="hint" style="text-align:center">Tap Copy. The code expires in 3 minutes.</p>
+    </div>
+  </section>
+
+  <section class="steps">
+    <h2>How to link</h2>
+    <ol>
+      <li>Enter your number above and tap <b>Get my pair code</b>.</li>
+      <li>Open WhatsApp, then <b>Settings → Linked devices</b>.</li>
+      <li>Tap <b>Link a device</b>, then <b>Link with phone number instead</b>.</li>
+      <li>Type the code from this page. Queen Zara is yours.</li>
+      <li>Your dashboard password arrives in your own WhatsApp chat. Use it in <b>Settings</b>.</li>
+    </ol>
+  </section>
+
+  <a class="settings-btn settings-wide" href="settings.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/></svg>
+    Open Settings panel
+  </a>
+
+  <div class="stats" id="stats" hidden>
+    <span>Active bots <b id="stBots">0</b></span>
+    <span>Uptime <b id="stUp">0m</b></span>
+    <span>Commands <b id="stCmd">0</b></span>
+  </div>
+
+  <a class="channel" href="https://whatsapp.com/channel/0029Vb7IVzk6RGJNIj91de26" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.5.2.3.7 1.2 1.5 1.9 1 .9 1.8 1.2 2.1 1.3.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2Z"/></svg>
+    Join our WhatsApp channel
+  </a>
+</main>
+
+<footer>
+  <p>Made with ♡ by <b>Sirimath</b></p>
+  <p style="margin-top:4px">© Queen Zara</p>
+</footer>
+
+<script>
+/* Backend routes (same server serves this page):
+   GET /code?number=94771234567 -> { code } or { status:"already_connected" } or { error }
+   GET /code/status             -> { online, uptime, commands }  (optional) */
+const API = "/code";
+async function api(path){
+  const r = await fetch(API + path);
+  let d = {}; try{ d = await r.json(); }catch(e){}
+  if (!r.ok) throw new Error(d.error || "Request failed");
+  return d;
+}
+
+const $ = id => document.getElementById(id);
+const num = $("num"), go = $("go"), err = $("err"),
+      res = $("res"), okmsg = $("okmsg"), codeEl = $("code"), copyBtn = $("copy");
+let current = "";
+
+num.addEventListener("input", () => {
+  num.value = num.value.replace(/\D/g, "");
+});
+num.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
+
+function showError(msg){
+  res.classList.remove("show");
+  okmsg.classList.remove("show");
+  err.textContent = msg;
+  err.classList.add("show");
+}
+
+function renderCode(raw){
+  const clean = String(raw).replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+  current = clean.length === 8 ? clean.slice(0,4) + "-" + clean.slice(4) : clean;
+  codeEl.innerHTML = "";
+  for (const c of current){
+    const s = document.createElement("span");
+    if (c === "-"){ s.className = "dash"; s.textContent = "-"; }
+    else { s.className = "ch"; s.textContent = c; }
+    codeEl.appendChild(s);
+  }
+  err.classList.remove("show");
+  res.classList.add("show");
+}
+
+go.addEventListener("click", async () => {
+  const n = num.value.trim();
+  if (n.length < 10 || n.length > 15){
+    showError("Enter your full number with country code, digits only.");
+    return;
+  }
+  go.disabled = true;
+  go.textContent = "Making your code…";
+  err.classList.remove("show");
+  res.classList.remove("show");
+  okmsg.classList.remove("show");
+  try{
+    const d = await api("?number=" + encodeURIComponent(n));
+    if (d.status === "already_connected"){
+      okmsg.classList.add("show");
+    } else {
+      const code = d.code || d.pair_code || d.pairingCode;
+      if (!code) throw new Error("No code received. Try again.");
+      renderCode(code);
+    }
+  }catch(e){
+    showError(e.message || "Couldn't get a code. Try again in a moment.");
+  }finally{
+    go.disabled = false;
+    go.textContent = "Get my pair code";
+  }
+});
+
+copyBtn.addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(current);
+  }catch(e){
+    const t = document.createElement("textarea");
+    t.value = current; document.body.appendChild(t); t.select();
+    document.execCommand("copy"); t.remove();
+  }
+  copyBtn.textContent = "Copied ♡";
+  setTimeout(() => copyBtn.textContent = "Copy code", 1800);
+});
+
+/* ===== live status ===== */
+async function loadStatus(){
+  const live = $("live"), txt = $("liveTxt");
+  try{
+    const st = await api("/status");
+    live.classList.remove("off");
+    txt.textContent = "Online";
+    const up = st.uptime || 0, d = Math.floor(up/86400), h = Math.floor(up%86400/3600), m = Math.floor(up%3600/60);
+    $("stBots").textContent = st.online ?? 0;
+    $("stUp").textContent = (d ? d + "d " : "") + h + "h " + m + "m";
+    $("stCmd").textContent = st.commands ?? 0;
+    $("stats").hidden = false;
+  }catch(e){
+    live.classList.add("off");
+    txt.textContent = "Server unreachable";
+    $("stats").hidden = true;
+  }
+}
+loadStatus(); setInterval(loadStatus, 15000);
+
+/* ===== drifting petals (one quiet ambient layer) ===== */
+(function(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = $("petals"), cx = cv.getContext("2d");
+  let W, H, P = [];
+  const colors = ["255,95,162","255,209,230","184,107,255"];
+  function size(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  function mk(initial){
+    return {
+      x: Math.random()*W, y: initial ? Math.random()*H : -20,
+      r: 4 + Math.random()*7, vy: .25 + Math.random()*.55,
+      vx: -.2 + Math.random()*.4, rot: Math.random()*6.28,
+      vr: -.015 + Math.random()*.03, c: colors[(Math.random()*3)|0],
+      a: .25 + Math.random()*.4
+    };
+  }
+  size(); addEventListener("resize", size);
+  for (let i=0;i<22;i++) P.push(mk(true));
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    for (const p of P){
+      p.y += p.vy; p.x += p.vx + Math.sin(p.y/60)*.25; p.rot += p.vr;
+      if (p.y > H + 20) Object.assign(p, mk(false));
+      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.rot);
+      cx.fillStyle = "rgba(" + p.c + "," + p.a + ")";
+      cx.beginPath();
+      cx.moveTo(0,-p.r);
+      cx.bezierCurveTo(p.r,-p.r,p.r,p.r*.6,0,p.r);
+      cx.bezierCurveTo(-p.r,p.r*.6,-p.r,-p.r,0,-p.r);
+      cx.fill(); cx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

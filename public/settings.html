@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Queen Zara · Settings</title>
+<meta name="theme-color" content="#2a0f26">
+<link rel="icon" href="https://files.catbox.moe/29hxc2.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --plum:#2a0f26;--plum-2:#3d1637;--rose:#ff5fa2;--blush:#ffd1e6;--orchid:#b86bff;
+  --cream:#fff5fa;--glass:rgba(255,255,255,.08);--line:rgba(255,190,225,.28);
+  --mu:rgba(255,209,230,.74);--ok:#7dffc2;--err:#ff8aa8;
+  --display:"Yeseva One","Georgia",serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  min-height:100%;font-family:var(--body);color:var(--cream);
+  background:
+    radial-gradient(60% 50% at 12% 8%,rgba(255,95,162,.36),transparent 70%),
+    radial-gradient(55% 45% at 92% 18%,rgba(184,107,255,.33),transparent 70%),
+    radial-gradient(70% 60% at 50% 112%,rgba(255,95,162,.28),transparent 70%),
+    var(--plum);
+  background-attachment:fixed;overflow-x:hidden;
+}
+.hide{display:none!important}
+#petals{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 18px 60px}
+:focus-visible{outline:3px solid var(--blush);outline-offset:3px}
+
+/* ---------- shared bits ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  border:1px solid var(--line);border-radius:16px;padding:12px 20px;
+  font:800 .95rem var(--body);color:var(--cream);background:var(--glass);text-decoration:none;
+  transition:transform .15s,background .2s,border-color .2s,box-shadow .2s;
+}
+.btn:hover{background:rgba(255,255,255,.14);border-color:var(--rose);transform:translateY(-1px)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+.btn.sm{padding:8px 14px;border-radius:99px;font-size:.84rem}
+.btn.r{
+  border:0;color:#3a0d2f;
+  background:linear-gradient(100deg,#ffd1e6,var(--rose) 60%,#ff7fb6);
+  box-shadow:0 10px 26px rgba(255,95,162,.42),inset 0 1px 0 rgba(255,255,255,.7);
+}
+.btn.r:hover{box-shadow:0 14px 32px rgba(255,95,162,.55),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(100deg,#ffd1e6,var(--rose) 60%,#ff7fb6)}
+.btn.del{color:var(--err);border-color:rgba(255,138,168,.45);background:none}
+label,.lab{display:block;font-size:.82rem;font-weight:800;color:var(--blush);margin-bottom:6px}
+.in{margin-bottom:16px}
+input[type=text],input[type=tel],input[type=password],input[type=datetime-local],input:not([type]),select{
+  width:100%;background:rgba(20,0,20,.4);border:1.5px solid var(--line);border-radius:14px;
+  color:var(--cream);font:700 .98rem var(--body);padding:12px 14px;outline:0;
+  transition:border-color .2s,box-shadow .2s;
+}
+select option{background:var(--plum-2);color:var(--cream)}
+input::placeholder{color:rgba(255,209,230,.4);font-weight:600}
+input:focus,select:focus{border-color:var(--rose);box-shadow:0 0 0 4px rgba(255,95,162,.22)}
+.fld{
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:0 14px;
+  background:rgba(20,0,20,.4);border:1.5px solid var(--line);border-radius:16px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.fld:focus-within{border-color:var(--rose);box-shadow:0 0 0 4px rgba(255,95,162,.22)}
+.fld b{color:var(--rose);font-size:1.15rem}
+.fld input{border:0;background:none;box-shadow:none!important;padding:14px 0;font-size:1.05rem}
+.out{margin-top:12px;font-weight:700;font-size:.9rem;min-height:1.2em}
+.out.e{color:var(--err)}.out.ok{color:var(--ok)}
+.hint{margin-top:12px;font-size:.82rem;color:var(--mu);line-height:1.5;text-align:left}
+.hint code,.pane code{color:var(--blush);font-family:ui-monospace,Menlo,monospace;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:6px}
+.note{font-size:.78rem;color:var(--mu);margin-top:6px;font-weight:700}
+.note.good{color:var(--ok)}.note.bad{color:var(--err)}
+
+/* ---------- top bar ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0 18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+.brand img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--rose)}
+.brand span{font:400 1.25rem var(--display)}
+.top-r{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ---------- login ---------- */
+.lock{
+  max-width:430px;margin:26px auto 0;text-align:center;padding:34px 24px 28px;
+  background:var(--glass);border:1px solid var(--line);border-radius:30px;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 24px 70px rgba(20,0,20,.5),inset 0 1px 0 rgba(255,255,255,.15);
+  animation:rise .7s cubic-bezier(.2,1,.3,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+.ring{position:relative;width:104px;height:104px;margin:0 auto 18px}
+.ring::before{
+  content:"";position:absolute;inset:-7px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--rose),var(--orchid),var(--blush),var(--rose));
+  animation:spin 9s linear infinite;
+}
+.ring::after{content:"";position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,rgba(255,95,162,.42),transparent 68%);z-index:-1;animation:glow 3.2s ease-in-out infinite}
+.ring img{position:relative;width:100%;height:100%;object-fit:cover;border-radius:50%;border:4px solid var(--plum);display:block;background:var(--plum-2)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glow{50%{transform:scale(1.12);opacity:.75}}
+.lock h1{font:400 2rem/1.1 var(--display);margin-bottom:8px;background:linear-gradient(100deg,#fff,var(--blush) 50%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lock p{color:var(--mu);font-size:.9rem;margin-bottom:20px;line-height:1.45}
+.lock.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* ---------- bot card ---------- */
+.botcard{
+  display:grid;grid-template-columns:1fr 1fr;overflow:hidden;border-radius:30px;
+  background:var(--glass);border:1px solid var(--line);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 24px 70px rgba(20,0,20,.5),inset 0 1px 0 rgba(255,255,255,.15);
+  animation:rise .7s cubic-bezier(.2,1,.3,1) both;
+}
+.who{padding:28px;display:flex;align-items:center;gap:20px}
+.avatar{position:relative;flex:none;width:96px;height:96px}
+.avatar::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,var(--rose),var(--orchid),var(--blush),var(--rose));animation:spin 9s linear infinite}
+.avatar .lg{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;border:4px solid var(--plum);background:var(--plum-2);display:grid;place-items:center;font:400 2.2rem var(--display)}
+.avatar .lg img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar i{position:absolute;right:0;bottom:2px;width:20px;height:20px;border-radius:50%;background:var(--ok);border:4px solid var(--plum);z-index:2;animation:pulse 2s infinite}
+.avatar i.off{background:var(--err);animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(125,255,194,.6)}70%{box-shadow:0 0 0 10px rgba(125,255,194,0)}100%{box-shadow:0 0 0 0 rgba(125,255,194,0)}}
+.who h1{font:400 clamp(1.5rem,3.6vw,2.1rem)/1.05 var(--display);word-break:break-word}
+.who p{color:var(--mu);font-size:.86rem;margin-top:6px}
+.pill{display:inline-flex;align-items:center;margin-top:12px;padding:5px 13px;border-radius:99px;border:1px solid rgba(125,255,194,.35);background:rgba(125,255,194,.08);color:var(--ok);font-size:.78rem;font-weight:800}
+.pill.off{color:var(--err);border-color:rgba(255,138,168,.4);background:rgba(255,138,168,.08)}
+.chatbg{padding:24px;border-left:1px solid var(--line);background:rgba(20,0,20,.28);display:flex;flex-direction:column;justify-content:center;gap:10px}
+.chatbg>small{color:var(--mu);font-size:.78rem;font-weight:700}
+.bub{max-width:310px;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:4px 18px 18px 18px;overflow:hidden}
+.pimg{aspect-ratio:16/9;background:rgba(20,0,20,.4);display:grid;place-items:center;color:var(--mu);font-size:.8rem;overflow:hidden}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.cap{padding:10px 12px 8px;font-size:.82rem;white-space:pre-wrap;word-break:break-word}
+.cap b{display:block;margin-bottom:4px;color:var(--blush)}
+.cap .ft{margin-top:8px;padding-left:9px;border-left:3px solid var(--rose);color:var(--mu);font-size:.78rem}
+.cap time{display:block;text-align:right;color:var(--mu);font-size:.64rem;margin-top:4px}
+
+/* ---------- tabs ---------- */
+.tabs{position:relative;display:flex;gap:6px;margin:20px 0 14px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:none;display:inline-flex;align-items:center;gap:8px;padding:10px 17px;border-radius:99px;
+  border:1px solid var(--line);background:var(--glass);color:var(--mu);
+  font:800 .88rem var(--body);cursor:pointer;transition:all .22s;
+}
+.tab:hover{color:var(--cream);border-color:var(--rose)}
+.tab[aria-selected=true]{background:linear-gradient(100deg,#ffd1e6,var(--rose));color:#3a0d2f;border-color:transparent;box-shadow:0 8px 22px rgba(255,95,162,.4);transform:translateY(-1px)}
+.cnt{font-style:normal;min-width:20px;padding:1px 7px;border-radius:99px;background:var(--plum);color:var(--blush);font-size:.7rem;text-align:center}
+.tab[aria-selected=true] .cnt{background:rgba(58,13,47,.85)}
+.cnt[hidden]{display:none}
+
+/* ---------- panes ---------- */
+.pane{display:none;padding:26px;margin-bottom:110px;border-radius:28px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.pane.on{display:block;animation:paneIn .45s cubic-bezier(.2,1,.3,1) both}
+@keyframes paneIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.pane h2{font:400 1.6rem var(--display);color:var(--blush)}
+.pane>p{color:var(--mu);font-size:.88rem;margin:4px 0 20px;line-height:1.45}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.pane.on .tile{animation:tileIn .5s cubic-bezier(.2,1,.3,1) both;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes tileIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.tile{
+  position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(20,0,20,.28);
+  cursor:pointer;transition:border-color .2s,background .25s,transform .15s;
+}
+.tile:hover{border-color:var(--rose);transform:translateY(-2px)}
+.tile input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.tile b{display:block;font-size:.92rem}
+.tile small{display:block;color:var(--mu);font-size:.76rem;line-height:1.35;margin-top:2px}
+.sw2{flex:none;width:44px;height:25px;border-radius:99px;background:rgba(255,255,255,.14);position:relative;transition:background .25s}
+.sw2::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:#d9bcd0;transition:left .28s cubic-bezier(.3,1.6,.5,1),background .2s}
+.tile:has(input:checked){border-color:var(--rose);background:linear-gradient(120deg,rgba(255,95,162,.2),rgba(184,107,255,.14))}
+.tile input:checked~.sw2{background:var(--rose)}
+.tile input:checked~.sw2::after{left:22px;background:#fff}
+.tile:has(input:focus-visible){outline:3px solid var(--blush);outline-offset:2px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;padding:5px;border:1px solid var(--line);border-radius:18px;background:rgba(20,0,20,.35)}
+.seg button{border:0;background:none;color:var(--mu);padding:11px 12px;border-radius:13px;cursor:pointer;font:800 .88rem var(--body);transition:background .2s,color .2s}
+.seg button small{display:block;font-weight:600;font-size:.72rem;margin-top:2px;opacity:.85}
+.seg button:hover{color:var(--cream)}
+.seg button[aria-pressed=true]{background:linear-gradient(100deg,#ffd1e6,var(--rose));color:#3a0d2f;box-shadow:0 6px 16px rgba(255,95,162,.38)}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;margin-bottom:8px;background:rgba(20,0,20,.28);animation:tileIn .4s both}
+.srow b{display:block;font-size:.9rem}.srow small{color:var(--mu);font-size:.76rem;word-break:break-word}
+.empty{padding:24px;border:1.5px dashed var(--line);border-radius:18px;color:var(--mu);font-size:.86rem;text-align:center}
+.danger{margin-top:22px;padding:18px;border:1px solid rgba(255,138,168,.4);border-radius:18px;background:rgba(255,138,168,.05)}
+.danger b{display:block;margin-bottom:4px}.danger p{color:var(--mu);font-size:.84rem;margin-bottom:12px;line-height:1.45}
+
+/* ---------- save bar ---------- */
+.savebar{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,40px) scale(.96);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:12px;padding:9px 9px 9px 20px;z-index:60;
+  background:rgba(42,15,38,.92);border:1px solid var(--rose);border-radius:99px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 16px 50px rgba(0,0,0,.55),0 0 30px rgba(255,95,162,.25);
+  transition:transform .35s cubic-bezier(.2,1.3,.4,1),opacity .25s;max-width:calc(100vw - 24px);
+}
+.savebar.on{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto}
+.savebar .msg{font-size:.86rem;font-weight:800}.savebar .msg.e{color:var(--err)}
+
+/* ---------- toast + footer ---------- */
+.toast{
+  position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  padding:11px 20px;border-radius:99px;background:linear-gradient(100deg,#ffd1e6,var(--rose));
+  color:#3a0d2f;font-weight:800;font-size:.9rem;box-shadow:0 10px 30px rgba(255,95,162,.5);
+  transition:.3s cubic-bezier(.2,1.3,.4,1);z-index:80;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.foot{margin-top:34px;text-align:center;font-size:.9rem;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:8px}
+.foot b{color:var(--cream)}
+.heart{display:inline-block;color:var(--rose);animation:hb 1.5s infinite}
+@keyframes hb{50%{transform:scale(1.25)}}
+.foot a{color:var(--blush);font-weight:800;text-decoration:none;border-bottom:1px dashed var(--line)}
+.foot a:hover{color:#fff}
+
+@media(max-width:860px){
+  .botcard{grid-template-columns:1fr}.chatbg{border-left:0;border-top:1px solid var(--line)}
+  .tiles,.fgrid,.sgrid{grid-template-columns:1fr}.who{padding:22px}.pane{padding:20px}
+  .brand span{font-size:1.05rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<canvas id="petals" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="pair.html">
+      <img src="https://files.catbox.moe/29hxc2.jpg" alt="Queen Zara logo">
+      <span>Queen Zara</span>
+    </a>
+    <div class="top-r">
+      <a class="btn sm" href="pair.html">Home</a>
+      <a class="btn sm" href="https://whatsapp.com/channel/0029Vb99eogKrWQq8tdoE61M" target="_blank" rel="noopener">Channel</a>
+      <button class="btn sm hide" id="logout" type="button">Log out</button>
+    </div>
+  </header>
+
+  <!-- login -->
+  <div class="lock" id="lock">
+    <div class="ring"><img src="https://files.catbox.moe/29hxc2.jpg" alt="Queen Zara"></div>
+    <h1>Control panel</h1>
+    <p>Enter your connected number and the dashboard password the bot sent to your WhatsApp.</p>
+    <div class="fld"><b>+</b><input id="lnum" type="tel" inputmode="numeric" placeholder="94771234567" autocomplete="username"></div>
+    <div class="fld"><input id="lpass" type="password" placeholder="Password" autocomplete="current-password"></div>
+    <button class="btn r" style="width:100%;margin-top:6px;height:50px" id="vbtn" type="button">Unlock panel</button>
+    <div class="out" id="lmsg" role="alert"></div>
+    <div class="hint">Forgot it? Send <code>.resetpass</code> from your bot's own chat and a new password will be sent there.</div>
+  </div>
+
+  <!-- app -->
+  <div class="hide" id="app">
+    <section class="botcard">
+      <div class="who">
+        <div class="avatar"><div class="lg" id="mLogo">Z</div><i id="dotst"></i></div>
+        <div>
+          <h1 id="mName">Queen Zara</h1>
+          <p id="mInfo">—</p>
+          <span class="pill" id="stPill"><span id="stTxt">—</span></span>
+        </div>
+      </div>
+      <div class="chatbg">
+        <small>How your bot's messages look</small>
+        <div class="bub">
+          <div class="pimg" id="pvLogo">No logo</div>
+          <div class="cap"><b id="pvTitle">—</b><span id="pvHint"></span><div class="ft" id="pvFoot"></div><time id="pvTime"></time></div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-g="identity">Branding</button>
+      <button class="tab" role="tab" aria-selected="false" data-g="status">Status <em class="cnt" hidden></em></button>
+      <button class="tab" role="tab" aria-selected="false" data-g="protect">Protection <em class="cnt" hidden></em></button>
+      <button class="tab" role="tab" aria-selected="false" data-g="general">General <em class="cnt" hidden></em></button>
+      <button class="tab" role="tab" aria-selected="false" data-g="schedule">Schedule</button>
+      <button class="tab" role="tab" aria-selected="false" data-g="security">Security</button>
+    </nav>
+
+    <section class="pane on" id="g-identity" role="tabpanel">
+      <h2>Branding</h2>
+      <p>Your name, footer and logo appear in every message the bot sends, including anti delete and anti edit notices. The preview above updates as you type.</p>
+      <div class="fgrid">
+        <div class="in"><label for="BOT_NAME">Bot name</label><input id="BOT_NAME" maxlength="40" placeholder="Queen lasii"></div>
+        <div class="in"><label for="PREFIX">Command prefix</label><input id="PREFIX" maxlength="3"></div>
+      </div>
+      <div class="in"><label for="BOT_FOOTER">Footer text</label><input id="BOT_FOOTER" maxlength="80" placeholder="© ᴘᴏᴡᴇʀᴅ ʙʏ sʜᴀᴍɪᴋᴀ ᴅᴇɴᴜᴡᴀɴ"></div>
+      <div class="in"><label for="RCD_IMAGE_PATH">Logo link (public https image)</label><input id="RCD_IMAGE_PATH" placeholder="https://files.catbox.moe/8x8sox.jpg"><div class="note" id="logoNote"></div></div>
+      <div class="hint">The forward style (channel link) is fixed and can not be changed.</div>
+    </section>
+
+    <section class="pane" id="g-status" role="tabpanel">
+      <h2>Status</h2>
+      <p>Automatic handling of your contacts' statuses.</p>
+      <div class="tiles">
+        <label class="tile"><input type="checkbox" id="AUTO_STATUS_SEEN"><span><b>Auto status seen</b><small>View every status automatically</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="AUTO_STATUS_REACT"><span><b>Auto status react</b><small>React with a random emoji</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="STATUS_FORWARD"><span><b>Status forward</b><small>Every new status is sent to your own chat</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="STATUS_SAVE_EMOJI"><span><b>Save by reply</b><small>Reply to a status with .save or an emoji to get it in your own chat</small></span><span class="sw2"></span></label>
+      </div>
+      <div class="in"><label for="STATUS_EMOJIS">React emojis (comma separated)</label><input id="STATUS_EMOJIS" placeholder="💖,🌸,🔥"></div>
+      <div class="in"><label for="STATUS_SAVE_EMOJIS">Save emojis (empty = any emoji)</label><input id="STATUS_SAVE_EMOJIS" placeholder="💾,📥"></div>
+    </section>
+
+    <section class="pane" id="g-protect" role="tabpanel">
+      <h2>Protection</h2>
+      <p>Catch deleted, edited and view once messages.</p>
+      <div class="tiles">
+        <label class="tile"><input type="checkbox" id="ANTI_DELETE"><span><b>Anti delete</b><small>Show messages people delete</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="ANTI_EDIT"><span><b>Anti edit</b><small>Show the old and new text of edits</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="ANTI_VIEWONCE"><span><b>View once recovery</b><small>Save view once media automatically</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="ANTI_CALL"><span><b>Anti call</b><small>Reject incoming calls</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="VV_EMOJI_REPLY"><span><b>View once emoji reply</b><small>Reply with an emoji to send it to your inbox</small></span><span class="sw2"></span></label>
+      </div>
+      <div class="in"><label for="VV_EMOJIS">Trigger emojis (empty = any emoji)</label><input id="VV_EMOJIS" placeholder="😍,🔥,👀"></div>
+      <div class="in"><span class="lab">Send notices to</span>
+        <input type="hidden" id="ANTI_DEST">
+        <div class="seg" data-target="ANTI_DEST" role="group" aria-label="Send notices to"><button type="button" data-v="owner">My own chat</button><button type="button" data-v="chat">Same chat</button></div></div>
+      <div class="in"><span class="lab">Anti delete works in</span>
+        <input type="hidden" id="ANTI_DELETE_SCOPE">
+        <div class="seg" data-target="ANTI_DELETE_SCOPE" role="group" aria-label="Anti delete scope"><button type="button" data-v="all">All chats</button><button type="button" data-v="private">Private only</button><button type="button" data-v="group">Groups only</button></div></div>
+      <div class="in"><span class="lab">Anti edit works in</span>
+        <input type="hidden" id="ANTI_EDIT_SCOPE">
+        <div class="seg" data-target="ANTI_EDIT_SCOPE" role="group" aria-label="Anti edit scope"><button type="button" data-v="all">All chats</button><button type="button" data-v="private">Private only</button><button type="button" data-v="group">Groups only</button></div></div>
+    </section>
+
+    <section class="pane" id="g-general" role="tabpanel">
+      <h2>General</h2>
+      <p>Bot mode, presence and reading behaviour.</p>
+      <div class="in"><span class="lab">Bot mode</span>
+        <input type="hidden" id="mode">
+        <div class="seg" data-target="mode" role="group" aria-label="Bot mode"><button type="button" data-v="public">Public<small>Everyone can use commands</small></button><button type="button" data-v="private">Private<small>Only you</small></button></div></div>
+      <div class="tiles" style="margin-top:20px">
+        <label class="tile"><input type="checkbox" id="AUTO_READ"><span><b>Auto read</b><small>Blue tick on incoming messages</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="ALWAYS_ONLINE"><span><b>Always online</b><small>Keep the online status showing</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="AUTO_TYPING"><span><b>Auto typing</b><small>Show “typing…” on new messages</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="AUTO_RECORDING"><span><b>Auto recording</b><small>Show “recording audio…”</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="AUTO_LIKE"><span><b>Like mode</b><small>React to incoming private messages</small></span><span class="sw2"></span></label>
+        <label class="tile"><input type="checkbox" id="AWAY_MODE"><span><b>Away mode</b><small>Auto reply once every 3 hours per chat</small></span><span class="sw2"></span></label>
+      </div>
+      <div class="fgrid">
+        <div class="in"><label for="LIKE_EMOJIS">Like emojis (comma separated)</label><input id="LIKE_EMOJIS" placeholder="💖,🌸,😍"></div>
+        <div class="in"><label for="AWAY_MSG">Away message</label><input id="AWAY_MSG" maxlength="200" placeholder="I am away right now…"></div>
+      </div>
+      <div class="hint">You can also change these from WhatsApp: <code>.settings</code>, <code>.antidelete on</code>, <code>.mode private</code>, <code>.delscope group</code></div>
+    </section>
+
+    <section class="pane" id="g-schedule" role="tabpanel">
+      <h2>Schedule</h2>
+      <p>Send a message or post a status at a set time.</p>
+      <div class="sgrid">
+        <div>
+          <div class="in"><label for="SC_KIND">Type</label><select id="SC_KIND"><option value="message">Message</option><option value="status">Status</option></select></div>
+          <div class="in" id="scToWrap"><label for="SC_TO">Send to (number with country code)</label><input id="SC_TO" inputmode="numeric" placeholder="94771234567"></div>
+          <div class="in"><label for="SC_TEXT">Text</label><input id="SC_TEXT" maxlength="1000"></div>
+          <div class="in"><label for="SC_IMG">Image link (optional)</label><input id="SC_IMG" placeholder="https://…"></div>
+          <div class="fgrid">
+            <div class="in"><label for="SC_AT">Time</label><input id="SC_AT" type="datetime-local"></div>
+            <div class="in"><label for="SC_REP">Repeat</label><select id="SC_REP"><option value="none">Once</option><option value="daily">Every day</option></select></div>
+          </div>
+          <button class="btn r" id="scAdd" style="width:100%" type="button">Add schedule</button>
+        </div>
+        <div id="scList"></div>
+      </div>
+    </section>
+
+    <section class="pane" id="g-security" role="tabpanel">
+      <h2>Security</h2>
+      <p>Change the password used to open this panel.</p>
+      <div style="max-width:460px">
+        <div class="in"><label for="PW_OLD">Current password</label><input id="PW_OLD" type="password" autocomplete="current-password"></div>
+        <div class="in"><label for="PW_NEW">New password (min 4 characters)</label><input id="PW_NEW" type="password" minlength="4" maxlength="64" autocomplete="new-password"></div>
+        <div class="in"><label for="PW_NEW2">Repeat new password</label><input id="PW_NEW2" type="password" autocomplete="new-password"></div>
+        <button class="btn r" id="pwBtn" style="width:100%" type="button">Change password</button>
+        <div class="out" id="pmsg"></div>
+        <div class="hint">From WhatsApp (bot's own chat only): <code>.resetpass myNewPass</code> or <code>.password myNewPass</code>. Forgot it? Send <code>.resetpass</code> for a random one.</div>
+        <div class="danger"><b>Disconnect bot</b><p>Removes the linked device and deletes this session. You can connect again from the home page.</p><button class="btn del sm" id="disc" type="button">Disconnect bot</button></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">
+    <span>Made with <span class="heart">♡</span> by <b>Sirimath</b></span>
+    <a href="https://whatsapp.com/channel/0029Vb7IVzk6RGJNIj91de26" target="_blank" rel="noopener">Join the Queen Lasii channel</a>
+    <span style="opacity:.7;font-size:.8rem">© Queen Lasii</span>
+  </div>
+</div>
+
+<div class="savebar" id="savebar" role="status">
+  <span class="msg" id="dmsg">You have unsaved changes</span>
+  <button class="btn sm" id="discard" type="button">Discard</button>
+  <button class="btn r sm" id="save" type="button">Save changes</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const DEFAULT_LOGO = "https://files.catbox.moe/29hxc2.jpg";
+const BOOLS = ['AUTO_STATUS_SEEN','AUTO_STATUS_REACT','STATUS_FORWARD','STATUS_SAVE_EMOJI','AUTO_READ','ALWAYS_ONLINE','AUTO_TYPING','AUTO_RECORDING','ANTI_DELETE','ANTI_EDIT','ANTI_VIEWONCE','ANTI_CALL','AUTO_LIKE','VV_EMOJI_REPLY','AWAY_MODE'];
+const TEXTS = ['BOT_NAME','BOT_FOOTER','RCD_IMAGE_PATH','PREFIX','STATUS_EMOJIS','STATUS_SAVE_EMOJIS','LIKE_EMOJIS','VV_EMOJIS','AWAY_MSG','ANTI_DEST','ANTI_DELETE_SCOPE','ANTI_EDIT_SCOPE','mode'];
+const SC = {a:'ᴀ',b:'ʙ',c:'ᴄ',d:'ᴅ',e:'ᴇ',f:'ꜰ',g:'ɢ',h:'ʜ',i:'ɪ',j:'ᴊ',k:'ᴋ',l:'ʟ',m:'ᴍ',n:'ɴ',o:'ᴏ',p:'ᴘ',q:'ǫ',r:'ʀ',s:'s',t:'ᴛ',u:'ᴜ',v:'ᴠ',w:'ᴡ',x:'x',y:'ʏ',z:'ᴢ'};
+const sc = (s) => String(s).toLowerCase().replace(/[a-z]/g, (c) => SC[c]);
+let token = null, snap = '', myNumber = '';
+try { token = sessionStorage.getItem('zara_token'); } catch (e) {}
+
+function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2600); }
+function say(id, text, cls){ const el = $(id); el.textContent = text || ''; el.className = 'out' + (cls ? ' ' + cls : ''); }
+async function api(path, method = 'GET', body){
+  const r = await fetch('/code' + path, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  let d = {}; try { d = await r.json(); } catch (e) {}
+  if (!r.ok){ const e = new Error(d.error || 'Request failed'); e.status = r.status; throw e; }
+  return d;
+}
+const upText = (s) => Math.floor(s / 3600) + 'h ' + Math.floor(s % 3600 / 60) + 'm';
+
+function setLogo(el, url, fallback){
+  el.textContent = '';
+  if (url && /^https:\/\//.test(url)){
+    const img = new Image(); img.alt = '';
+    img.onerror = () => { el.textContent = fallback; };
+    img.src = url; el.appendChild(img);
+  } else el.textContent = fallback;
+}
+function paintLogo(){
+  const u = $('RCD_IMAGE_PATH').value.trim(), note = $('logoNote');
+  setLogo($('mLogo'), u || DEFAULT_LOGO, 'Z'); setLogo($('pvLogo'), u, 'No logo');
+  if (!u){ note.textContent = 'Add an https image link to show your logo.'; note.className = 'note'; return; }
+  if (!/^https:\/\//.test(u)){ note.textContent = 'The link must start with https://'; note.className = 'note bad'; return; }
+  note.textContent = 'Checking image…'; note.className = 'note';
+  const t = new Image();
+  t.onload = () => { if ($('RCD_IMAGE_PATH').value.trim() === u){ note.textContent = 'Logo works (' + t.naturalWidth + '×' + t.naturalHeight + ')'; note.className = 'note good'; } };
+  t.onerror = () => { if ($('RCD_IMAGE_PATH').value.trim() === u){ note.textContent = 'This image could not be loaded. Use a public https link.'; note.className = 'note bad'; } };
+  t.src = u;
+}
+function paintBrand(){
+  const name = $('BOT_NAME').value.trim() || 'Queen Zara', d = new Date();
+  $('mName').textContent = name;
+  $('pvTitle').textContent = '┌─ム ' + sc(name) + ' </> ' + sc('menu');
+  $('pvHint').textContent = 'Send ' + ($('PREFIX').value || '.') + 'menu to see all commands';
+  $('pvFoot').textContent = $('BOT_FOOTER').value.trim();
+  $('pvFoot').classList.toggle('hide', !$('BOT_FOOTER').value.trim());
+  $('pvTime').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+function paintSegs(){
+  document.querySelectorAll('.seg').forEach(g => g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === $(g.dataset.target).value))));
+}
+function paintCounts(){
+  let total = 0;
+  document.querySelectorAll('.tab').forEach(t => {
+    const em = t.querySelector('.cnt'); if (!em) return;
+    const n = $('g-' + t.dataset.g).querySelectorAll('input[type=checkbox]:checked').length;
+    em.textContent = n; em.hidden = !n; total += n;
+  });
+  $('mInfo').textContent = '+' + myNumber + ' · ' + total + ' feature' + (total === 1 ? '' : 's') + ' on';
+}
+function stagger(){
+  document.querySelectorAll('.pane').forEach(p => p.querySelectorAll('.tile').forEach((t, i) => t.style.setProperty('--i', i)));
+}
+
+const collect = () => { const c = {}; BOOLS.forEach(k => c[k] = $(k).checked); TEXTS.forEach(k => c[k] = $(k).value.trim()); return c; };
+function fill(c){
+  BOOLS.forEach(k => $(k).checked = c[k] === true || c[k] === 'true');
+  TEXTS.forEach(k => { $(k).value = c[k] !== undefined ? c[k] : ''; });
+  if (!$('mode').value) $('mode').value = 'public';
+  if (!$('ANTI_DEST').value) $('ANTI_DEST').value = 'owner';
+  if (!$('ANTI_DELETE_SCOPE').value) $('ANTI_DELETE_SCOPE').value = 'all';
+  if (!$('ANTI_EDIT_SCOPE').value) $('ANTI_EDIT_SCOPE').value = 'all';
+  paintLogo(); paintBrand(); paintSegs(); paintCounts();
+}
+function markDirty(){
+  const d = JSON.stringify(collect()) !== snap;
+  $('savebar').classList.toggle('on', d);
+  if (d){ $('dmsg').textContent = 'You have unsaved changes'; $('dmsg').className = 'msg'; }
+}
+const onEdit = () => { paintBrand(); paintCounts(); markDirty(); };
+$('app').addEventListener('input', onEdit);
+$('app').addEventListener('change', onEdit);
+let logoTimer = null;
+$('RCD_IMAGE_PATH').addEventListener('input', () => { clearTimeout(logoTimer); logoTimer = setTimeout(paintLogo, 400); });
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+  const t = $(b.closest('.seg').dataset.target); t.value = b.dataset.v;
+  t.dispatchEvent(new Event('input', { bubbles: true })); paintSegs();
+}));
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+  document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id === 'g-' + b.dataset.g));
+});
+
+function shakeLock(){
+  const l = $('lock'); l.classList.remove('shake'); void l.offsetWidth; l.classList.add('shake');
+}
+async function doLogin(){
+  const number = $('lnum').value.replace(/\D/g, ''), password = $('lpass').value;
+  if (number.length < 8){ shakeLock(); return say('lmsg', 'Enter your number.', 'e'); }
+  if (!password){ shakeLock(); return say('lmsg', 'Enter your password.', 'e'); }
+  $('vbtn').disabled = true; say('lmsg', 'Checking…', '');
+  try {
+    const d = await api('/dash/login', 'POST', { number, password });
+    token = d.token; try { sessionStorage.setItem('zara_token', token); } catch (e) {}
+    $('lpass').value = ''; say('lmsg', ''); load();
+  } catch (e){ shakeLock(); say('lmsg', e.message, 'e'); }
+  $('vbtn').disabled = false;
+}
+$('vbtn').onclick = doLogin;
+$('lpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+
+function lockUI(){
+  token = null; try { sessionStorage.removeItem('zara_token'); } catch (e) {}
+  $('lock').classList.remove('hide'); $('app').classList.add('hide'); $('logout').classList.add('hide');
+  $('savebar').classList.remove('on'); $('lpass').value = '';
+}
+async function load(){
+  try {
+    const d = await api('/dash/config');
+    myNumber = d.number;
+    $('lock').classList.add('hide'); $('app').classList.remove('hide'); $('logout').classList.remove('hide');
+    fill(d.config); stagger(); snap = JSON.stringify(collect());
+    $('stTxt').textContent = (d.online ? 'Online' : 'Offline') + ' · up ' + upText(d.uptime);
+    $('stPill').classList.toggle('off', !d.online); $('dotst').classList.toggle('off', !d.online);
+    $('savebar').classList.remove('on');
+    loadSched();
+  } catch (e){ if (e.status === 401){ lockUI(); say('lmsg', 'Session expired. Log in again.', 'e'); } else toast(e.message); }
+}
+
+$('save').onclick = async () => {
+  $('save').disabled = $('discard').disabled = true; $('dmsg').textContent = 'Saving…'; $('dmsg').className = 'msg';
+  try { await api('/dash/config', 'POST', { config: collect() }); toast('Saved ♡'); await load(); }
+  catch (e){
+    if (e.status === 401){ lockUI(); say('lmsg', 'Session expired. Log in again.', 'e'); }
+    else { $('dmsg').textContent = e.message; $('dmsg').className = 'msg e'; }
+  }
+  $('save').disabled = $('discard').disabled = false;
+};
+$('discard').onclick = () => { fill(JSON.parse(snap)); $('savebar').classList.remove('on'); };
+
+$('pwBtn').onclick = async () => {
+  const cur = $('PW_OLD').value, nw = $('PW_NEW').value, nw2 = $('PW_NEW2').value;
+  if (!cur || !nw) return say('pmsg', 'Fill all fields.', 'e');
+  if (nw.length < 4) return say('pmsg', 'New password must be at least 4 characters.', 'e');
+  if (nw !== nw2) return say('pmsg', 'New passwords do not match.', 'e');
+  $('pwBtn').disabled = true; say('pmsg', 'Saving…', '');
+  try {
+    await api('/dash/password', 'POST', { current: cur, next: nw });
+    $('PW_OLD').value = $('PW_NEW').value = $('PW_NEW2').value = '';
+    say('pmsg', 'Password changed.', 'ok'); toast('Password changed');
+  } catch (e){ if (e.status === 401){ lockUI(); say('lmsg', 'Session expired. Log in again.', 'e'); } else say('pmsg', e.message, 'e'); }
+  $('pwBtn').disabled = false;
+};
+$('logout').onclick = async () => { try { await api('/dash/logout', 'POST'); } catch (e) {} lockUI(); };
+$('disc').onclick = async () => {
+  if (!confirm('Disconnect the bot and delete its session?')) return;
+  try { await api('/dash/disconnect', 'POST'); toast('Bot disconnected'); lockUI(); } catch (e) { toast(e.message); }
+};
+
+async function loadSched(){
+  try {
+    const d = await api('/dash/schedules'), box = $('scList'); box.replaceChildren();
+    if (!d.schedules.length){
+      const e = document.createElement('div'); e.className = 'empty';
+      e.textContent = 'Nothing scheduled yet. Fill in the form to add your first one.';
+      box.appendChild(e); return;
+    }
+    d.schedules.forEach(s => {
+      const row = document.createElement('div'); row.className = 'srow';
+      const info = document.createElement('div');
+      const b = document.createElement('b'); b.textContent = s.kind === 'status' ? '📢 Status' : '💬 ' + s.to.split('@')[0];
+      const sm = document.createElement('small');
+      sm.textContent = new Date(s.at).toLocaleString() + (s.repeat === 'daily' ? ' · daily' : '') + ' · ' + (s.text || '(image)').slice(0, 40);
+      info.append(b, sm);
+      const del = document.createElement('button'); del.className = 'btn sm'; del.type = 'button'; del.textContent = 'Delete';
+      del.onclick = async () => { try { await api('/dash/schedules/' + s.id, 'DELETE'); loadSched(); } catch (e) { toast(e.message); } };
+      row.append(info, del); box.appendChild(row);
+    });
+  } catch (e){ if (e.status === 401) lockUI(); }
+}
+$('SC_KIND').onchange = () => $('scToWrap').classList.toggle('hide', $('SC_KIND').value === 'status');
+$('scAdd').onclick = async () => {
+  const at = new Date($('SC_AT').value).getTime();
+  if (!at) return toast('Pick a date and time');
+  try {
+    await api('/dash/schedules', 'POST', { kind: $('SC_KIND').value, to: $('SC_TO').value, text: $('SC_TEXT').value, image: $('SC_IMG').value, at, repeat: $('SC_REP').value });
+    toast('Scheduled'); $('SC_TEXT').value = ''; loadSched();
+  } catch (e){ toast(e.message); }
+};
+stagger();
+if (token) load();
+
+/* ===== drifting petals ===== */
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = $('petals'), cx = cv.getContext('2d');
+  let W, H; const P = [];
+  const colors = ['255,95,162','255,209,230','184,107,255'];
+  function size(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  function mk(init){
+    return { x: Math.random()*W, y: init ? Math.random()*H : -20, r: 4 + Math.random()*7,
+      vy: .25 + Math.random()*.55, vx: -.2 + Math.random()*.4, rot: Math.random()*6.28,
+      vr: -.015 + Math.random()*.03, c: colors[(Math.random()*3)|0], a: .22 + Math.random()*.4 };
+  }
+  size(); addEventListener('resize', size);
+  for (let i = 0; i < 22; i++) P.push(mk(true));
+  (function draw(){
+    cx.clearRect(0, 0, W, H);
+    for (const p of P){
+      p.y += p.vy; p.x += p.vx + Math.sin(p.y/60)*.25; p.rot += p.vr;
+      if (p.y > H + 20) Object.assign(p, mk(false));
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+      cx.fillStyle = 'rgba(' + p.c + ',' + p.a + ')';
+      cx.beginPath(); cx.moveTo(0, -p.r);
+      cx.bezierCurveTo(p.r, -p.r, p.r, p.r*.6, 0, p.r);
+      cx.bezierCurveTo(-p.r, p.r*.6, -p.r, -p.r, 0, -p.r);
+      cx.fill(); cx.restore();
+    }
+    requestAnimationFrame(draw);
+  })();
+})();
+</script>
+</body>
+</html>
